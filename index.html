@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Hỏi Đáp - Gemini API</title>
+  <link rel="manifest" href="/manifest.json" />
+  <!-- Cho phép cài đặt ứng dụng trên Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4a90e2">
+
+  <!-- Cho phép cài đặt ứng dụng trên iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AI Hỏi Đáp - Gemini API">
+  <link rel="apple-touch-icon" href="/icon-192x192.png">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #ece9e6, #ffffff);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+      transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #4a90e2;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #357ABD;
+    }
+
+    .response {
+      margin-top: 20px;
+      background: #f7f7f7;
+      padding: 15px;
+      border-left: 4px solid #4a90e2;
+      border-radius: 8px;
+      font-size: 15px;
+      white-space: pre-wrap;
+    }
+
+    .new-conversation-button {
+      background-color: #f39c12;
+    }
+
+    .new-conversation-button:hover {
+      background-color: #e67e22;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧠 Hỏi Đáp</h1>
+    <textarea id="question" placeholder="Nhập câu hỏi của bạn..."></textarea><br>
+    <button onclick="askAI()">Gửi câu hỏi</button>
+    <button class="new-conversation-button" onclick="startNewConversation()">Tạo hội thoại mới</button>
+
+    <div id="response" class="response" style="display:none;"></div>
+  </div>
+
+  <script>
+    // Lưu lịch sử hội thoại
+    let conversationHistory = [];
+
+    // Hàm gửi câu hỏi
+    async function askAI() {
+      const question = document.getElementById("question").value.trim();
+      const apiKey = 'AIzaSyDGEl6xFTUdvcEe8GfatXlPenpNklG4jIE'; // 🔁 Thay bằng key thật
+      const responseDiv = document.getElementById("response");
+
+      if (!question) {
+        responseDiv.innerText = "Vui lòng nhập câu hỏi trước khi gửi.";
+        responseDiv.style.display = 'block';
+        return;
+      }
+
+      // Thêm câu hỏi người dùng vào lịch sử
+      conversationHistory.push({
+        role: "user",
+        parts: [{ text: question }]
+      });
+
+      const data = {
+        contents: conversationHistory
+      };
+
+      try {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        if (result.candidates && result.candidates.length > 0) {
+          const aiText = result.candidates[0].content.parts[0].text;
+
+          // Thêm phản hồi AI vào lịch sử hội thoại
+          conversationHistory.push({
+            role: "model",
+            parts: [{ text: aiText }]
+          });
+
+          responseDiv.innerText = aiText;
+        } else {
+          responseDiv.innerText = "Không nhận được phản hồi từ AI.";
+        }
+      } catch (error) {
+        responseDiv.innerText = "Đã xảy ra lỗi khi gửi yêu cầu.";
+      }
+
+      responseDiv.style.display = 'block';
+    }
+
+    // Hàm tạo hội thoại mới
+    function startNewConversation() {
+      conversationHistory = []; // Xóa lịch sử hội thoại
+      document.getElementById("question").value = ""; // Xóa ô nhập liệu
+      document.getElementById("response").style.display = 'none'; // Ẩn phản hồi
+    }
+  </script>
+</body>
+</html>
