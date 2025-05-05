@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Hỏi Đáp - Gemini API</title>
   <link rel="manifest" href="./manifest.json" />
   <!-- Cho phép cài đặt ứng dụng trên Android -->
@@ -29,14 +30,15 @@
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      height: 100%;
     }
 
     .container {
-      width: 90%;
+      width: 100%;
       max-width: 600px;
       background: #fff;
       border-radius: 12px;
-      padding: 30px;
+      padding: 20px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
@@ -114,6 +116,30 @@
 
     #install-button:hover {
       background-color: #357ABD;
+    }
+
+    /* Responsive styling */
+    @media (max-width: 600px) {
+      .container {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      textarea {
+        height: 80px;
+      }
+
+      button {
+        font-size: 14px;
+        padding: 10px;
+      }
+
+      .response {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
