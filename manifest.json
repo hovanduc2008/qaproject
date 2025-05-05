@@ -1,8 +1,8 @@
 {
-    "name": "AI Hỏi Đáp - Gemini API",
+    "name": "AI Hỏi Đáp",
     "short_name": "Hỏi Đáp AI",
     "description": "Ứng dụng AI hỏi đáp",
-    "start_url": "/",
+    "start_url": "/qaproject",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#4a90e2",
